@@ -1,14 +1,5 @@
-# Welcome to your CDK TypeScript project
+## Bootstrapping an Amazon EC2 Instance Using User-data to Run a Python Web App
 
-This is a blank project for CDK development with TypeScript.
+### Deploy a Python web application to an EC2 instance running Nginx and uWSGI, using a CI/CD Pipeline created with Amazon CDK.
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
-
-## Useful commands
-
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `npx cdk deploy`  deploy this stack to your default AWS account/region
-* `npx cdk diff`    compare deployed stack with current state
-* `npx cdk synth`   emits the synthesized CloudFormation template
+https://community.aws/content/2duq9xSYespeSBQ5R1WiuOcCvMj/using-ec2-userdata-to-bootstrap-python-web-app?lang=en#setting-up-github
