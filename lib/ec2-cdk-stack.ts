@@ -103,12 +103,12 @@ export class Ec2CdkStack extends cdk.Stack {
     );
     webServer.addUserData(webSGUserData);
     // Tag the instance
-    cdk.Tags.of(webServer).add("application-name", "python-web");
+    cdk.Tags.of(webServer).add("application-name", "node-web");
     cdk.Tags.of(webServer).add("stage", "prod");
 
     // CodePipeline
-    const pipeline = new Pipeline(this, "python_web_pipeline", {
-      pipelineName: "python-webApp",
+    const pipeline = new Pipeline(this, "node_web_pipeline", {
+      pipelineName: "node-webApp",
       crossAccountKeys: false, // solves the encrypted bucket issue
     });
 
@@ -134,7 +134,7 @@ export class Ec2CdkStack extends cdk.Stack {
       actionName: "GithubSource",
       oauthToken: SecretValue.secretsManager("github-oauth-token"), // MAKE SURE TO SET UP BEFORE
       owner: "777marc", // THIS NEEDS TO BE CHANGED TO YOUR OWN USER ID
-      repo: "sample-python-web-app",
+      repo: "ts-node-express",
       branch: "main",
       output: sourceOutput,
     });
@@ -142,55 +142,55 @@ export class Ec2CdkStack extends cdk.Stack {
     sourceStage.addAction(githubSourceAction);
 
     // Build Action
-    const pythonTestProject = new PipelineProject(this, "pythonTestProject", {
+    const nodeTestProject = new PipelineProject(this, "nodeTestProject", {
       environment: {
         buildImage: LinuxBuildImage.AMAZON_LINUX_2_5,
       },
     });
 
-    const pythonTestOutput = new Artifact();
+    const nodeTestOutput = new Artifact();
 
-    const pythonTestAction = new CodeBuildAction({
-      actionName: "TestPython",
-      project: pythonTestProject,
+    const nodeTestAction = new CodeBuildAction({
+      actionName: "TestNode",
+      project: nodeTestProject,
       input: sourceOutput,
-      outputs: [pythonTestOutput],
+      outputs: [nodeTestOutput],
     });
 
-    buildStage.addAction(pythonTestAction);
+    buildStage.addAction(nodeTestAction);
 
     // Deploy Actions
-    const pythonDeployApplication = new ServerApplication(
+    const nodeDeployApplication = new ServerApplication(
       this,
-      "python_deploy_application",
+      "node_deploy_application",
       {
-        applicationName: "python-webApp",
+        applicationName: "node-webApp",
       }
     );
 
     // Deployment group
-    const pythonServerDeploymentGroup = new ServerDeploymentGroup(
+    const nodeServerDeploymentGroup = new ServerDeploymentGroup(
       this,
-      "PythonAppDeployGroup",
+      "nodeAppDeployGroup",
       {
-        application: pythonDeployApplication,
-        deploymentGroupName: "PythonAppDeploymentGroup",
+        application: nodeDeployApplication,
+        deploymentGroupName: "nodeAppDeploymentGroup",
         installAgent: true,
         ec2InstanceTags: new InstanceTagSet({
-          "application-name": ["python-web"],
-          "stage": ["prod", "stage"],
+          "application-name": ["node-web"],
+          stage: ["prod", "stage"],
         }),
       }
     );
 
     // Deployment action
-    const pythonDeployAction = new CodeDeployServerDeployAction({
-      actionName: "PythonAppDeployment",
+    const nodeDeployAction = new CodeDeployServerDeployAction({
+      actionName: "NodeAppDeployment",
       input: sourceOutput,
-      deploymentGroup: pythonServerDeploymentGroup,
+      deploymentGroup: nodeServerDeploymentGroup,
     });
 
-    deployStage.addAction(pythonDeployAction);
+    deployStage.addAction(nodeDeployAction);
 
     // Output the public IP address of the EC2 instance
     new cdk.CfnOutput(this, "IP Address", {
