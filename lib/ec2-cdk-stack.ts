@@ -171,10 +171,10 @@ export class Ec2CdkStack extends cdk.Stack {
     // Deployment group
     const nodeServerDeploymentGroup = new ServerDeploymentGroup(
       this,
-      "nodeAppDeployGroup",
+      "NodeAppDeployGroup",
       {
         application: nodeDeployApplication,
-        deploymentGroupName: "nodeAppDeploymentGroup",
+        deploymentGroupName: "NodeAppDeploymentGroup",
         installAgent: true,
         ec2InstanceTags: new InstanceTagSet({
           "application-name": ["node-web"],
