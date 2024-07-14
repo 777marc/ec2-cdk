@@ -1,25 +1,17 @@
-#!/usr/bin/env zsh
+sudo yum update
+sudo yum upgrade
+sudo yum install -y git htop wget
 
-# https://stackoverflow.com/questions/11542846/nvm-node-js-recommended-install-for-all-users
-echo "=================================N=O=D=E========================================"
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 
-cd /usr/local/bin || exit 90
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-git clone https://github.com/nvm-sh/nvm.git .nvm
+nvm --version
 
-\. "/usr/local/bin/.nvm/nvm.sh"
+nvm install --lts # Latest stable node js server version
 
-nvm install --lts
+node --version
 
-node -e "console.log('Running Node.js ' + process.version)"
-
-cat << "EOF" > /etc/profile.d/npm.sh
-#!/usr/bin/env bash
-export NVM_DIR="/usr/local/bin/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm'}
-
-EOF
-
-chmod 755 /etc/profile.d/npm.sh
-
-npm install -g npm
+npm -v
